@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from django.views.generic import ListView
 
-# Create your views here.
+from models import Locataire
+
+class immo_appHome(ListView):
+    model = Locataire
+    context_object_name = 'immo_app'
