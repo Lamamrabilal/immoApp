@@ -80,9 +80,13 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME':'immo_db',
         'USER': 'immo_user',
-       ' PASSWORD': 'boukhalfa_1987',
-        'HOST':'localhost',
-      '  PORT': '5433'
+       'PASSWORD': 'boukhalfa_1987',
+        'HOST':'127.0.0.1',
+      'PORT': '5433',
+
+'OPTIONS': {
+            'options': '-c search_path=myschema'
+        }
     }
 }
 
