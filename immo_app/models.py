@@ -81,4 +81,15 @@ class EtatLieux(models.Model):
         verbose_name = 'Etat_lieux'
 
 
+    def __str__(self):
+        return self.locataire
 
+class FraisAgence (models.Model):
+     agence= models.ForeignKey( ContratLocataire, on_delete=models.SET_NULL, null=True, blank=False)
+     frais = models.IntegerField( default= '8')
+     def nom_agence(self):
+         nom_agence = self.agence.adresse_set.first()
+         return nom_agence
+
+     def __str__(self):
+         return self.agence

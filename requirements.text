@@ -6,4 +6,5 @@ pip        23.0.1
 setuptools 67.4.0
 sqlparse   0.4.4
 wheel      0.40.0
+django-bootstrap-v5
 
