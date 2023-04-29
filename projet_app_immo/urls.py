@@ -23,7 +23,8 @@ app_name = 'immo_app'
 urlpatterns = [
 
     path('custom-admin/', admin.site.urls),
-    path('', include('immo_app.urls')),
+
+    path('immo_app/', include('immo_app.urls')),
 
   ]
 

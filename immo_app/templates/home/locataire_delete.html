@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+  <div class="container mt-3">
+
+    <h2>Supprimer le locataire "{{ locataire.nom }} {{ locataire.prenom }}" ?</h2>
+    <form method="post" class="form-group">
+      {% csrf_token %}
+      <p>Êtes-vous sûr de vouloir supprimer ce locataire ?</p>
+      <button type="submit" class="btn btn-danger">Supprimer</button>
+      <a href="{% url 'immo_app:locataire' locataire.slug %}" class="btn btn-secondary">Annuler</a>
+    </form>
+  </div>
+{% endblock %}
+

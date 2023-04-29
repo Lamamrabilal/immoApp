@@ -1,10 +1,10 @@
 
 from django.core.validators import RegexValidator
 from django.db import models
-
+from django.urls import reverse
+from django.utils.text import slugify
 
 telephone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$')
-
 
 class Locataire(models.Model):
     nom = models.CharField(max_length=50, unique=True, verbose_name='nom')
@@ -12,13 +12,22 @@ class Locataire(models.Model):
     adresse = models.CharField(max_length=50, unique=True, verbose_name='adresse')
     email = models.EmailField(max_length=30, blank=False)
     telephone = models.CharField(max_length=13, validators=[telephone_regex], blank=False)
+    slug = models.SlugField(unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        # génère un slug à partir du nom et du prénom du locataire
+        self.slug = slugify(f"{self.nom} {self.prenom}")
+        super().save(*args, **kwargs)
 
     class Meta:
         ordering = ['nom']
         verbose_name = "Locataire"
 
     def __str__(self):
-        return self.nom
+        return f"{self.prenom} {self.nom}"
+
+    def get_absolute_url(self):
+        return reverse('immo_app:locataire')
 
 
 class Appartement(models.Model):

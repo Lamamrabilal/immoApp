@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+  <h1>Ajouter un locataire</h1>
+  <form method="post" action="{%url 'immo_app:create'%}">
+    {% csrf_token %}
+    {% crispy form %}
+
+  </form>
+{% endblock %}
