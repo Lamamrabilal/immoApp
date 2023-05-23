@@ -1,84 +1,116 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load bootstrap5 %}
+
 {% block content %}
-  <div class="container mt-3">
-    <h2>Liste des locataires</h2>
-
-  <a href="{% url 'immo_app:create' %}" class="btn btn-light">
-    <i class="fas fa-plus"></i> Ajouter un locataire
-</a>
-
-
-    <table class="table table-hover">
+<div class="container-fluid mt-5 p-5 ms-sm-0">
+  <h2 class="text-center">Liste des locataires</h2>
+  <div class="table-responsive-sm">
+    <table class="table table-hover table-responsive">
       <thead>
         <tr>
           <th>Nom</th>
           <th>Prénom</th>
           <th>Email</th>
           <th>Téléphone</th>
+          <th>Adresse</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         {% for locataire in locataires %}
-          <tr>
-            <td>{{ locataire.nom }}</td>
-            <td>{{ locataire.prenom }}</td>
-            <td>{{ locataire.email }}</td>
-            <td>{{ locataire.telephone }}</td>
-            <td>
-
-              <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{ locataire.id}}">
-
-                <i class="fas fa-trash"></i> Supprimer
-
-              </button>
-              <a href="{% url 'immo_app:create' %}" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus"></i> Ajouter
-              </a>
-            </td>
-          </tr>
+        <tr>
+          <td>{{ locataire.nom }}</td>
+          <td>{{ locataire.prenom }}</td>
+          <td>{{ locataire.email }}</td>
+          <td>{{ locataire.telephone }}</td>
+          <td>{{ locataire.adresse }}</td>
+          <td>
+            <div class="d-flex justify-content-between align-items-center">
+              <a href="{% url 'immo_app:locataire_update' locataire.id %}" class="btn btn-primary">Modifier</a>
+              <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ locataire.id }}">Supprimer</a>
+            </div>
+          </td>
+        </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 
+  <div class="text-end">
+    <a href="{% url 'immo_app:locataire_create' %}" class="btn btn-light">
+      <i class="fas fa-plus"></i> Ajouter un locataire
+    </a>
+  </div>
+</div>
 
-  <!-- Modal de suppression -->
-
-  {% for locataire in locataires %}
-  <div class="modal fade" id="deleteModal{{ locataire.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="deleteModalLabel">Supprimer le locataire "{{ locataire.nom }} {{ locataire.prenom }}" ?</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-
-        <div class="modal-body">
-          Êtes-vous sûr de vouloir supprimer le locataire "{{ locataire.nom }} {{ locataire.prenom }}" ?
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-              <form method="POST" action="{% url 'immo_app:delete' locataire.slug %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Supprimer</button>
-          </form>
-        </div>
+<!-- Modal de suppression -->
+{% for locataire in locataires %}
+<div class="modal fade" id="deleteModal{{ locataire.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Supprimer le locataire "{{ locataire.nom }} {{ locataire.prenom }}" ?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Êtes-vous sûr de vouloir supprimer le locataire "{{ locataire.nom }} {{ locataire.prenom }}" ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+        <form method="POST" action="{% url 'immo_app:locataire_delete' locataire.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Supprimer</button>
+        </form>
       </div>
     </div>
   </div>
-  {% endfor %}
+</div>
+{% endfor %}
+
+{% if is_paginated %}
+<nav aria-label="Locataires">
+  <ul class="pagination justify-content-center">
+    {% if locataires.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ locataires.previous_page_number }}">&laquo;</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+      <span class="page-link">&laquo;</span>
+    </li>
+    {% endif %}
+
+    {% for num in locataires.paginator.page_range %}
+    {% if num == locataires.number %}
+    <li class="page-item active">
+      <span class="page-link">{{ num }}</span>
+    </li>
+    {% else %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+    </li>
+    {% endif %}
+    {% endfor %}
+
+    {% if locataires.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ locataires.next_page_number }}">&raquo;</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+      <span class="page-link">&raquo;</span>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+
 {% endblock %}
-
-
-
-
-
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 
-{% endblock javascripts%}
+{% endblock javascripts %}

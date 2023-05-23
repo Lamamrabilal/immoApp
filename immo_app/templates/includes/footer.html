@@ -1,10 +1,34 @@
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Gestion locative{% endblock %}</title>
+
+    {% load static %}
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <link href="{% static 'fontawesome/css/all.min.css' %}" rel="stylesheet">
 </head>
 <body>
-$END$
+
+<footer class="bg-light p-2 fixed-bottom w-auto">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6 ">
+        <p>© 2023 - Immo Application</p>
+      </div>
+      <div class="col-md-6 text-end col-sm-auto">
+        <a href="#">Terms and Conditions</a>
+        <a href="#">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>

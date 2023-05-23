@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+  <h1>Ajouter un etat_lieux</h1>
+  <form method="post" action="{%url 'immo_app:etat_lieux_create'%} ">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="btn btn-success">Ajouter</button>
+  </form>
+{% endblock %}

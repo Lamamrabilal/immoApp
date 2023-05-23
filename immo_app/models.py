@@ -34,7 +34,7 @@ class Appartement(models.Model):
     adresse = models.CharField(max_length=255, unique=True)
     complement_adresse = models.CharField(max_length=255, unique=True)
     ville = models.CharField(max_length=50)
-    postal_code = models.CharField(max_length=6, validators=[RegexValidator('^[0-9]{6}$', ('Invalid postal code'))])
+    postal_code = models.CharField(max_length=5, validators=[RegexValidator('^[0-9]{5}$', ('Invalid code postale'))])
     locataire = models.ForeignKey(Locataire, on_delete=models.SET_NULL, null=True, blank=False)
     montant_loyer = models.DecimalField(max_digits=10, decimal_places=2)
     montant_charge = models.DecimalField(max_digits=10, decimal_places=2)
@@ -46,6 +46,9 @@ class Appartement(models.Model):
 
     def __str__(self):
         return self.adresse
+
+    def get_absolute_url(self):
+        return reverse('immo_app:appartement')
 
 
 class ContratLocataire(models.Model):
@@ -63,6 +66,9 @@ class ContratLocataire(models.Model):
     def __str__(self):
         return self.nom_agence
 
+    def get_absolute_url(self):
+        return reverse('immo_app:contrat_locataire')
+
 
 class Paiement(models.Model):
     locataire = models.ForeignKey( Locataire,on_delete=models.SET_NULL, null=True, blank=False)
@@ -76,11 +82,16 @@ class Paiement(models.Model):
         verbose_name = 'Paiement'
 
     def __str__(self):
-        return self.locataire
+        return f"{self.locataire} - {self.date_paiement} - {self.montant_paiement}"
+
+    def get_absolute_url(self):
+        return reverse('immo_app:paiement')
+
+
 
 
 class EtatLieux(models.Model):
-    locataire = models.ForeignKey( Locataire,on_delete=models.SET_NULL,null= True, blank=False)
+    locataire = models.ForeignKey(Locataire,on_delete=models.SET_NULL,null= True, blank=False)
     appartement = models.ForeignKey(Appartement, on_delete=models.SET_NULL, null=True, blank=False)
     date_entree = models.DateField(blank=False)
     date_sortie = models.DateField(blank=False)
@@ -91,11 +102,16 @@ class EtatLieux(models.Model):
 
 
     def __str__(self):
-        return self.locataire
+        return f"EtatLieux #{self.id} ({self.locataire.nom} {self.locataire.prenom})"
+
+    def get_absolute_url(self):
+        return reverse('immo_app:etat_lieux')
+
 
 class FraisAgence (models.Model):
      agence= models.ForeignKey( ContratLocataire, on_delete=models.SET_NULL, null=True, blank=False)
      frais = models.IntegerField( default= '8')
+
      def nom_agence(self):
          nom_agence = self.agence.adresse_set.first()
          return nom_agence

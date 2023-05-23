@@ -1,47 +1,126 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>État des lieux</title>
-</head>
-<body>
-    <h1>État des lieux</h1>
-    <form action="{% url 'immo_app: etat_des_lieux' %}" method="POST">
-        {% csrf_token %}
-        <h2>Informations générales</h2>
-        <label for="location">Location :</label>
-        <input type="text" id="location" name="location"><br>
+{% extends 'base.html' %}
+{% load bootstrap5 %}
 
-        <label for="date">Date :</label>
-        <input type="date" id="date" name="date"><br>
+{% block content %}
+  <div class="container-fluid mt-5 p-5">
+    <h2>État des lieux</h2>
 
-        <h2>Description du logement</h2>
-        <label for="type">Type :</label>
-        <input type="text" id="type" name="type"><br>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+              <th>Locataire</th>
+              <th>Appartement</th>
+              <th>Date d'entrée</th>
+              <th>Date de sortie</th>
+              <th>Montant solde</th>
+               <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for etat_lieux in etat_lieux %}
+            <tr>
+              <td>{{ etat_lieux.locataire }}</td>
+                <td>{{ etat_lieux.appartement }}</td>
+                <td>{{ etat_lieux.date_entree }}</td>
+                <td>{{ etat_lieux.date_sortie }}</td>
+                <td>{{ etat_lieux.montant_solde }}</td>
+              <td>
+                <div class="d-flex justify-content-between align-items-center">
+                  <a href="{% url 'immo_app:etat_lieux_update' etat_lieux.id %}" class="btn btn-primary">Modifier</a>
+                  <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ etat_lieux.id }}">Supprimer</a>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
-        <label for="surface">Surface (m²) :</label>
-        <input type="number" id="surface" name="surface"><br>
+   <div class="text-end">
+    <a href="{% url 'immo_app:etat_lieux_create' %}" class="btn btn-light">
+      <i class="fas fa-plus"></i> Ajouter un état des lieux
+    </a>
+  </div>
 
-        <label for="nombre_pieces">Nombre de pièces :</label>
-        <input type="number" id="nombre_pieces" name="nombre_pieces"><br>
+  </div>
 
-        <label for="adresse">Adresse :</label>
-        <input type="text" id="adresse" name="adresse"><br>
+  <!-- Modal de suppression -->
 
-        <h2>Description de l'état du logement</h2>
-        <label for="etat">État :</label>
-        <input type="text" id="etat" name="etat"><br>
+  {% for etat_lieux in etat_lieux %}
+  <div class="modal fade" id="deleteModal{{ etat_lieux.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Supprimer l'état des lieux ?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
 
-        <label for="etat_entree">État à l'entrée :</label>
-        <input type="text" id="etat_entree" name="etat_entree"><br>
+        <div class="modal-body">
+          Êtes-vous sûr de vouloir supprimer l'état des lieux ?
+        </div>
 
-        <label for="etat_sortie">État à la sortie :</label>
-        <input type="text" id="etat_sortie" name="etat_sortie"><br>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+          <form method="POST" action="{% url 'immo_app:etat_lieux_delete' etat_lieux.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Supprimer</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 
-        <h2>Commentaires</h2>
-        <textarea id="commentaires" name="commentaires"></textarea><br>
 
-        <input type="submit" value="Enregistrer">
-    </form>
-</body>
-</html>
+  {% if is_paginated %}
+  <nav aria-label="etat_lieux">
+    <ul class="pagination justify-content-center">
+      {% if locataires.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ etat_lieux.previous_page_number }}">&laquo;</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">&laquo;</span>
+        </li>
+      {% endif %}
+
+      {% for num in etat_lieux.paginator.page_range %}
+        {% if num == etat_lieux.number %}
+          <li class="page-item active">
+            <span class="page-link">{{ num }}</span>
+          </li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      {% if etat_lieux.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ etat_lieux.next_page_number }}">&raquo;</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">&raquo;</span>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+
+
+
+{% endblock %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+{% endblock javascripts%}
+
+
+

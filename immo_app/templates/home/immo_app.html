@@ -1,10 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+{% load static %}
+{% block title %}Accueil{% endblock %}
 
-</body>
-</html>
+{% block content %}
+<div class="container-fluid  position-relative ">
+  <h1 class="text-center mt-5 ms-5">Bienvenue sur notre site de gestion locative</h1>
+  <div class="row  ms-sm-0 ms-lg-5  position-absolute" style="top:150px; left: 30%">
+    <div class="col-md-3 ">
+      <div class="card mb-5">
+        <div class="card-body ">
+          <h5 class="card-title"><i class="fas fa-building"></i> Gérer vos biens immobiliers</h5>
+          <p class="card-text">Ajoutez et gérez facilement vos biens immobiliers (appartements, maisons, etc.) depuis notre interface conviviale.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card mb-5">
+        <div class="card-body">
+          <h5 class="card-title"><i class="fas fa-users"></i> Gérer vos locataires</h5>
+          <p class="card-text">Ajoutez et gérez facilement vos locataires depuis notre interface conviviale.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card mb-5">
+        <div class="card-body">
+          <h5 class="card-title"><i class="fas fa-file-contract"></i> Gérer vos contrats de location</h5>
+          <p class="card-text">Créez et gérez facilement les contrats de location de vos biens immobiliers depuis notre interface conviviale.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

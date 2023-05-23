@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load crispy_forms_filters %}
 
 {% load crispy_forms_tags %}
 
@@ -11,7 +12,7 @@
 
       <div class="form-group">
         <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <a href="{% url 'immo_app:update-edit slug:slug' %}" class="btn btn-secondary">Annuler</a>
+        <a href="{% url 'immo_app:locataire'  %}" class="btn btn-secondary">Annuler</a>
       </div>
     </form>
   </div>

@@ -11,22 +11,21 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os.path
 from pathlib import Path
-
+import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-
+env = environ.Env()
+environ.Env.read_env(env_file=str(BASE_DIR /'projet_app_immo' /'.env'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^(3ybhfi=!0zdq-o(ux288hf%gz8n=9!otk=ovn^(7vj#x9c$_'
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG',False)
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 # Application definition
 
@@ -41,6 +40,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "bootstrap5",
+
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -84,7 +84,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME':'immo_db',
-        'USER': 'immo_user',
+        'USER': 'bilallamamra',
        'PASSWORD': 'boukhalfa_1987',
         'HOST':'127.0.0.1',
       'PORT': '5433',
@@ -92,7 +92,8 @@ DATABASES = {
 'OPTIONS': {
             'options': '-c search_path=myschema'
         }
-    }
+    },
+
 }
 
 
@@ -132,6 +133,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = (BASE_DIR /'immo_app/static'),
+
+MEDIA_URL ='/media/'
+MEDIA_ROOT=BASE_DIR /'mediafiles'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

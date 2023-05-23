@@ -30,15 +30,19 @@ class AppartementForm(forms.ModelForm):
         fields = '__all__'
 
 
-class Contrat_locataireForm(forms.ModelForm):
+class ContratLocataireForm(forms.ModelForm):
     class Meta:
         model = ContratLocataire
         fields = '__all__'
+
 
 class PaiementForm(forms.ModelForm):
     class Meta:
         model = Paiement
         fields = '__all__'
+
+
+
 
 class Etat_lieuxForm(forms.ModelForm):
     class Meta:
