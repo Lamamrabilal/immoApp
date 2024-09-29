@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os.path
 from pathlib import Path
 import environ
+import dj_database_url
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
@@ -39,7 +40,7 @@ INSTALLED_APPS = [
     'immo_app',
     "crispy_forms",
     "crispy_bootstrap5",
-    "bootstrap5",
+        
 
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -80,22 +81,14 @@ WSGI_APPLICATION = 'projet_app_immo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+# Database
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME':'immo_db',
-        'USER': 'bilallamamra',
-       'PASSWORD': 'boukhalfa_1987',
-        'HOST':'127.0.0.1',
-      'PORT': '5433',
-
-'OPTIONS': {
-            'options': '-c search_path=myschema'
-        }
-    },
-
+    'default': dj_database_url.parse(env('DJANGO_DATABASE_URL'))
 }
 
+# Définition des options pour la base de données par défaut
+DATABASES['default']['OPTIONS'] = {'options': '-c search_path=myschema,public'}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
