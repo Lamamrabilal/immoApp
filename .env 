@@ -1,3 +1,0 @@
-SECRET_KEY='v_ja\la!Q%>A{%XgeUr:-4v~p{|ehB(5+r'#J!Mw|Z5C;Z%&Vr'
-DEBUG='False'
-ALLOWED_HOSTS='127.0.0.1, localhost'
