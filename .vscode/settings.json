@@ -1,3 +1,7 @@
 {
+<<<<<<< HEAD
     "python.pythonPath": "/Library/Frameworks/Python.framework/Versions/3.10/bin/python3"
+=======
+    "sqltools.connections": []
+>>>>>>> 08af2c9d28726fce742ad495bff9386ac044ea75
 }

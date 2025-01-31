@@ -2,6 +2,9 @@ import os
 from pathlib import Path
 import environ
 
+
+import dj_database_url
+>>>>>>> 08af2c9d28726fce742ad495bff9386ac044ea75
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,11 +34,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'immo_app',
     "crispy_forms",
+<<<<<<< HEAD
     "crispy_tailwind"
    
-    
-]
-
+ 
 
 CRISPY_TEMPLATE_PACK = 'tailwind'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
@@ -75,20 +77,18 @@ WSGI_APPLICATION = 'projet_app_immo.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
+# Database
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'immo_db',
-        'USER': 'bilallamamra',
-        'PASSWORD': 'boukhalfa_1987',
-        'HOST': 'localhost',
-        'PORT': '5435',
-        'OPTIONS': {
-            'options': '-c search_path=myschema'
-        }
-    },
+
+          
+    'default': dj_database_url.parse(env('DJANGO_DATABASE_URL'))
 }
 
+# Définition des options pour la base de données par défaut
+DATABASES['default']['OPTIONS'] = {'options': '-c search_path=myschema,public'}
+
+>>>>>>> 08af2c9d28726fce742ad495bff9386ac044ea75
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 

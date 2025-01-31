@@ -1,0 +1,59 @@
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_IMAGE = "bilallamamra/immo_app"
+        AWS_REGION = "eu-west-1"
+        AWS_ECR_REPO = "immo_app"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/bilallamamra/immoapp.git'  // Lien vers ton repo Git
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("$DOCKER_IMAGE:latest")
+                }
+            }
+        }
+
+        stage('Test Application') {
+            steps {
+                sh 'docker run --rm $DOCKER_IMAGE pytest'  // Tester ton application Django avec pytest
+            }
+        }
+
+        stage('Push to Docker Registry (ECR)') {
+            steps {
+                script {
+                    // Connexion à AWS ECR
+                    sh 'aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin <aws_account_id>.dkr.ecr.$AWS_REGION.amazonaws.com'
+                    
+                    // Push l'image Docker dans ECR
+                    sh 'docker tag $DOCKER_IMAGE:latest <aws_account_id>.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_ECR_REPO:latest'
+                    sh 'docker push <aws_account_id>.dkr.ecr.$AWS_REGION.amazonaws.com/$AWS_ECR_REPO:latest'
+                }
+            }
+        }
+
+        stage('Deploy to AWS Elastic Beanstalk') {
+            steps {
+                script {
+                    // Déployer sur Elastic Beanstalk
+                    sh 'eb deploy immoapp-env'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()  // Nettoyer le workspace à la fin de la pipeline
+        }
+    }
+}
