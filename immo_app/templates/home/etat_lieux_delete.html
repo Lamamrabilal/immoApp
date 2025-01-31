@@ -1,11 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Supprimer l'état des lieux  ?</h1>
-  <p>Êtes-vous sûr de vouloir supprimer cet état des lieux ? Cette action est irréversible.</p>
-  <form method="post">
+<div class="container mx-auto mt-10 p-6 bg-white shadow rounded">
+  <h1 class="text-2xl font-bold text-gray-800 mb-4">Supprimer l'état des lieux ?</h1>
+  <p class="text-gray-600 mb-6">Êtes-vous sûr de vouloir supprimer cet état des lieux ? Cette action est irréversible.</p>
+
+  <form method="post" class="space-y-4">
     {% csrf_token %}
-    <button type="submit" class="btn btn-danger">Supprimer</button>
-    <a href="{% url 'immo_app:etat_lieux' %}" class="btn btn-secondary">Annuler</a>
+    <div class="flex space-x-4">
+      <button type="submit" class="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
+        Supprimer
+      </button>
+      <a href="{% url 'immo_app:etat_lieux' %}" class="bg-gray-300 text-gray-800 px-6 py-2 rounded hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300">
+        Annuler
+      </a>
+    </div>
   </form>
+</div>
 {% endblock %}

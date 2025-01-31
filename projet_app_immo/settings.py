@@ -16,7 +16,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DEBUG', False)
+DEBUG = env.bool('DEBUG', True)
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
@@ -31,12 +31,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'immo_app',
     "crispy_forms",
-    "crispy_bootstrap5",
-    "bootstrap5",
+    "crispy_tailwind"
+   
+    
 ]
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
-CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = 'tailwind'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -77,8 +81,8 @@ DATABASES = {
         'NAME': 'immo_db',
         'USER': 'bilallamamra',
         'PASSWORD': 'boukhalfa_1987',
-        'HOST': '127.0.0.1',
-        'PORT': '5433',
+        'HOST': 'localhost',
+        'PORT': '5435',
         'OPTIONS': {
             'options': '-c search_path=myschema'
         }
@@ -114,9 +118,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = (BASE_DIR / 'immo_app/static',)  # Ensure the tuple is properly closed
-
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'mediafiles'

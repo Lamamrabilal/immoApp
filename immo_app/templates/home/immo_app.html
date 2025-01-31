@@ -1,36 +1,59 @@
 {% extends 'base.html' %}
-{% load bootstrap5 %}
 {% load static %}
 {% block title %}Accueil{% endblock %}
+{% block stylesheets %}
+  <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+  <link href="{% static 'dist/output.css' %}" rel="stylesheet">
+{% endblock stylesheets %}
 
 {% block content %}
-<div class="container-fluid  position-relative ">
-  <h1 class="text-center mt-5 ms-5">Bienvenue sur notre site de gestion locative</h1>
-  <div class="row  ms-sm-0 ms-lg-5  position-absolute" style="top:150px; left: 30%">
-    <div class="col-md-3 ">
-      <div class="card mb-5">
-        <div class="card-body ">
-          <h5 class="card-title"><i class="fas fa-building"></i> Gérer vos biens immobiliers</h5>
-          <p class="card-text">Ajoutez et gérez facilement vos biens immobiliers (appartements, maisons, etc.) depuis notre interface conviviale.</p>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+  <h1 class="text-center text-2xl sm:text-3xl font-bold mt-10">
+    Bienvenue sur notre site de gestion locative
+  </h1>
+  
+  <!-- Content Section -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-16 lg:mt-24 pt-10 lg:pt-20">
+    <!-- Column 1 -->
+    <div class="max-w-sm mx-auto">
+      <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="flex items-center space-x-4">
+          <i class="fas fa-building text-blue-500 text-2xl"></i>
+          <h5 class="text-lg font-semibold">Gérer vos biens immobiliers</h5>
         </div>
+        <p class="mt-4 text-gray-600">
+          Ajoutez et gérez facilement vos biens immobiliers (appartements, maisons, etc.) depuis notre interface conviviale.
+        </p>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card mb-5">
-        <div class="card-body">
-          <h5 class="card-title"><i class="fas fa-users"></i> Gérer vos locataires</h5>
-          <p class="card-text">Ajoutez et gérez facilement vos locataires depuis notre interface conviviale.</p>
+    
+    <!-- Column 2 -->
+    <div class="max-w-sm mx-auto">
+      <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="flex items-center space-x-4">
+          <i class="fas fa-users text-green-500 text-2xl"></i>
+          <h5 class="text-lg font-semibold">Gérer vos locataires</h5>
         </div>
+        <p class="mt-4 text-gray-600">
+          Ajoutez et gérez facilement vos locataires depuis notre interface conviviale.
+        </p>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="card mb-5">
-        <div class="card-body">
-          <h5 class="card-title"><i class="fas fa-file-contract"></i> Gérer vos contrats de location</h5>
-          <p class="card-text">Créez et gérez facilement les contrats de location de vos biens immobiliers depuis notre interface conviviale.</p>
+    
+    <!-- Column 3 -->
+    <div class="max-w-sm mx-auto">
+      <div class="bg-white shadow-lg rounded-lg p-6">
+        <div class="flex items-center space-x-4">
+          <i class="fas fa-file-contract text-purple-500 text-2xl"></i>
+          <h5 class="text-lg font-semibold">Gérer vos contrats de location</h5>
         </div>
+        <p class="mt-4 text-gray-600">
+          Créez et gérez facilement les contrats de location de vos biens immobiliers depuis notre interface conviviale.
+        </p>
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
+
+

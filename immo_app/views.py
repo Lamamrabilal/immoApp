@@ -192,21 +192,15 @@ class Etat_lieuxListView(ListView):
     paginate_by = 2
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = queryset.order_by('id')
-        return queryset
+        # Vérifiez si `super().get_queryset()` est utilisé correctement
+        return super().get_queryset().order_by('id')
 
     def get_context_data(self, **kwargs):
+        # Assurez-vous que vous n'appelez pas `get_queryset()` directement ici
         context = super().get_context_data(**kwargs)
-        etat_lieux = self.get_queryset()
-        paginator = Paginator(etat_lieux, self.paginate_by)
-        page_number = self.request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-
-        context['etat_lieux'] = page_obj
-        context['paginator'] = paginator
-        context['is_paginated'] = page_obj.has_other_pages()
+        context['is_paginated'] = context['page_obj'].has_other_pages()
         return context
+
 
 class EtatLieuxCreateView(CreateView):
 

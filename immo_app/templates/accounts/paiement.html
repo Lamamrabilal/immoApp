@@ -1,139 +1,121 @@
-
 {% extends 'base.html' %}
-
+{% load static %}
 
 {% block content %}
-  <div class="container-fluid mt-5 p-5">
-    <h2>Liste des paiements</h2>
+<div class="container mx-auto mt-10 px-4 sm:px-6 lg:px-8">
+  <h2 class="text-center text-2xl font-bold text-gray-800 mb-6">Liste des paiements</h2>
+  <div class="shadow-md rounded-md overflow-hidden border border-gray-300">
+    <table class="min-w-full bg-white text-sm">
+      <thead>
+        <tr class="bg-gray-700 text-white">
+          <th class="px-4 py-2 text-left font-medium tracking-wide">Locataire</th>
+          <th class="px-4 py-2 text-left font-medium tracking-wide">Appartement</th>
+          <th class="px-4 py-2 text-left font-medium tracking-wide">Montant de paiement</th>
+          <th class="px-4 py-2 text-left font-medium tracking-wide">Date de paiement</th>
+          <th class="px-4 py-2 text-left font-medium tracking-wide hidden md:table-cell">Origine du paiement</th>
+          <th class="px-4 py-2 text-center font-medium tracking-wide">Actions</th>
+        </tr>
+      </thead>
+      
+      <tbody class="divide-y divide-gray-200">
+        {% for paiement in paiements %}
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-3 whitespace-nowrap text-gray-800">{{ paiement.locataire }}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-gray-800">{{ paiement.appartement }}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-gray-800">{{ paiement.montant_paiement }}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-gray-800">{{ paiement.date_paiement }}</td>
+          <td class="px-4 py-3 whitespace-nowrap text-gray-800 hidden md:table-cell">{{ paiement.origine_paiement }}</td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <div class="flex justify-center space-x-1">
+              <a href="{% url 'immo_app:paiement_update' paiement.id %}" class="text-white bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded transition">Modifier</a>
+              <button class="text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded transition" data-modal-toggle="#deleteModal{{ paiement.id }}">Supprimer</button>
+              <a href="{% url 'immo_app:quittance' paiement.id %}" class="text-white bg-green-500 hover:bg-green-600 px-3 py-1 rounded transition">Générer une quittance</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-              <th>Locataire</th>
-              <th>Appartement</th>
-              <th>Montant de paiement</th>
-              <th>Date de paiement</th>
-              <th>Origine du paiement</th>
-              <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for paiement in paiements %}
-            <tr>
-               <td>{{ paiement.locataire }}</td>
-                <td>{{ paiement.appartement }}</td>
-                <td>{{ paiement.montant_paiement }}</td>
-                <td>{{ paiement.date_paiement}}</td>
-                <td>{{ paiement.origine_paiement}}</td>
-
-            <td>
-                <div class="d-flex justify-content-between align-items-center">
-                  <a href="{% url 'immo_app:paiement_update' paiement.id %}" class="btn btn-primary">Modifier</a>
-                     <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#deleteModal{{ paiement.id }}">Supprimer</a>
-                   <a href="{% url 'immo_app:quittance' paiement.id %}" class="btn btn-primary">Générer une quittance</a>
-
-                </div>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
- <div class="text-end">
-    <a href="{% url 'immo_app:paiement_create' %}" class="btn btn-light">
-      <i class="fas fa-plus"></i> Ajouter un paiement
+  <div class="mt-4 flex justify-end">
+    <a href="{% url 'immo_app:paiement_create' %}" class="inline-flex items-center text-white bg-green-500 hover:bg-green-600 px-4 py-2 rounded shadow">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H5a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+      </svg>
+      Ajouter un paiement
     </a>
   </div>
-  </div>
+</div>
 
-  <!-- Modal de suppression -->
-
-  {% for paiement in paiements %}
-  <div class="modal fade" id="deleteModal{{ paiement.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="deleteModalLabel">Supprimer le paiement ?</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-
-        <div class="modal-body">
-          Êtes-vous sûr de vouloir supprimer le paiement?
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-          <form method="POST" action="{% url 'immo_app:paiement_delete' paiement.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Supprimer</button>
-          </form>
-        </div>
-      </div>
+<!-- Modal de suppression -->
+{% for paiement in paiements %}
+<div id="deleteModal{{ paiement.id }}" class="modal fixed inset-0 z-50 hidden items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white rounded-md shadow-md w-full max-w-sm">
+    <div class="border-b p-3">
+      <h5 class="text-md font-bold">Supprimer le paiement ?</h5>
+    </div>
+    <div class="p-3">
+      <p class="text-gray-700">Voulez-vous vraiment supprimer ce paiement ?</p>
+    </div>
+    <div class="flex justify-end space-x-2 p-3 border-t">
+      <button class="text-gray-600 bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded" data-modal-toggle="#deleteModal{{ paiement.id }}">Annuler</button>
+      <form method="POST" action="{% url 'immo_app:paiement_delete' paiement.id %}">
+        {% csrf_token %}
+        <button type="submit" class="text-white bg-red-500 hover:bg-red-600 px-3 py-1 rounded">Supprimer</button>
+      </form>
     </div>
   </div>
-  {% endfor %}
+</div>
+{% endfor %}
 
+{% if is_paginated %}
+<nav class="mt-4">
+  <ul class="flex justify-center space-x-1">
+    {% if paiements.has_previous %}
+    <li><a href="?page={{ paiements.previous_page_number }}" class="px-2 py-1 border rounded">&laquo;</a></li>
+    {% else %}
+    <li><span class="px-2 py-1 border rounded text-gray-400">&laquo;</span></li>
+    {% endif %}
 
-  {% if is_paginated %}
-  <nav aria-label="paiements">
-    <ul class="pagination justify-content-center">
-      {% if paiements.has_previous %}
-        <li class="page-item">
-          <a class="page-link" href="?page={{ paiements.previous_page_number }}">&laquo;</a>
-        </li>
-      {% else %}
-        <li class="page-item disabled">
-          <span class="page-link">&laquo;</span>
-        </li>
-      {% endif %}
+    {% for num in paiements.paginator.page_range %}
+    {% if num == paiements.number %}
+    <li><span class="px-2 py-1 border bg-blue-500 text-white rounded">{{ num }}</span></li>
+    {% else %}
+    <li><a href="?page={{ num }}" class="px-2 py-1 border rounded">{{ num }}</a></li>
+    {% endif %}
+    {% endfor %}
 
-      {% for num in paiements.paginator.page_range %}
-        {% if num == paiements.number %}
-          <li class="page-item active">
-            <span class="page-link">{{ num }}</span>
-          </li>
-        {% else %}
-          <li class="page-item">
-            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-          </li>
-        {% endif %}
-      {% endfor %}
-
-      {% if paiements.has_next %}
-        <li class="page-item">
-          <a class="page-link" href="?page={{ paiements.next_page_number }}">&raquo;</a>
-        </li>
-      {% else %}
-        <li class="page-item disabled">
-          <span class="page-link">&raquo;</span>
-        </li>
-      {% endif %}
-    </ul>
-  </nav>
-  {% endif %}
-
+    {% if paiements.has_next %}
+    <li><a href="?page={{ paiements.next_page_number }}" class="px-2 py-1 border rounded">&raquo;</a></li>
+    {% else %}
+    <li><span class="px-2 py-1 border rounded text-gray-400">&raquo;</span></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
 {% endblock %}
 
-<!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+<script>
+  document.querySelectorAll("[data-modal-toggle]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const modal = document.querySelector(button.getAttribute("data-modal-toggle"));
 
-{% endblock javascripts%}
+      if (modal) {
+        modal.classList.toggle("hidden");
+        modal.classList.toggle("flex");
+      }
+    });
+  });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  document.querySelectorAll(".modal").forEach((modal) => {
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    });
+  });
+</script>
+{% endblock javascripts %}

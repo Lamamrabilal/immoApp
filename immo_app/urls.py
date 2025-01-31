@@ -14,7 +14,7 @@ app_name = 'immo_app'
 urlpatterns = [
 
     path('', immo_appHome.as_view(), name='immo_app'),
-
+    path('login/', PaiementListView.as_view(), name='login'),
     path('locataire/', ListeLocatairesView.as_view(), name='locataire'),
     path('locataire_create/', LocataireCreateView.as_view() , name='locataire_create'),
     path('immo_app/<int:pk>/locataire_update/', LocataireUpdateView.as_view(), name='locataire_update'),
