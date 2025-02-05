@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copier le reste du projet dans le répertoire de travail
 COPY . .
 
-# Exposegt(erétf(gbbbn , tnrfr le port 8000 pour Django
+# Expose le port 8000 pour Django
 EXPOSE 8000
 
 
