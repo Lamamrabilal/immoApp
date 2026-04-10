@@ -102,7 +102,7 @@ class EtatLieux(models.Model):
 
 
     def __str__(self):
-        return f"EtatLieux #{self.id} ({self.locataire.nom} {self.locataire.prenom})"
+        return f"EtatLieux {self.id} ({self.locataire.nom} {self.locataire.prenom})"
 
     def get_absolute_url(self):
         return reverse('immo_app:etat_lieux')

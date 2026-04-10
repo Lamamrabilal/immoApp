@@ -7,7 +7,7 @@ from .models import Locataire
 class TestLocataireView(TestCase):
     def setUp(self):
         self.client = Client()
-        self.url = reverse('create_locataire')
+        self.url = reverse('locataire_create')
         self.data = {
             'nom': 'Doe',
             'prenom': 'John',

@@ -1,3 +1,4 @@
+-- Active: 1734397614689@@127.0.0.1@5435@immo_db@myschema
 asgiref==3.6.0
 beautifulsoup4==4.12.2
 pillow
@@ -22,13 +23,10 @@ matplotlib==3.7.1
 numpy==1.24.3
 packaging==23.1
 Pillow==9.5.0
-pisa==3.0.33
+xhtml2pdf
 psycopg2-binary==2.9.6
 pycairo==1.23.0
 pyparsing==3.0.9
-PyQt5==5.15.9
-PyQt5-Qt5==5.15.2
-PyQt5-sip==12.12.1
 python-dateutil==2.8.2
 python-environ==0.4.54
 reportlab==4.0.0

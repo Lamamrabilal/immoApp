@@ -1,21 +1,30 @@
-# Utiliser une image Python officielle comme image de base
+# Use a lightweight Python image
 FROM python:3.11-slim
 
-# Définir le répertoire de travail dans le conteneur
+# Set working directory
 WORKDIR /app
 
-# Copier le fichier requirements.txt dans le conteneur
+# Install only what Django actually needs
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first to leverage Docker layer caching
 COPY requirements.txt .
 
-# Installer les dépendances
-RUN pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
+    && pip install --no-cache-dir -r requirements.txt
 
-# Copier le reste du projet dans le répertoire de travail
-COPY . .
+# Create a non-root user for security
+RUN useradd --create-home appuser
+USER appuser
 
-# Expose le port 8000 pour Django
+# Copy project files
+COPY --chown=appuser:appuser . .
+
+# Expose Django's port
 EXPOSE 8000
 
-
-# Commande pour démarrer le serveur de développement Django
+# Start Django
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

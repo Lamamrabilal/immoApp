@@ -1,0 +1,11 @@
+__pycache__/
+.git/
+.venv/
+node_modules/
+*.log
+*.pyc
+*.pyo
+media/
+staticfiles/
+db.postgresql
+.env/
