@@ -24,7 +24,7 @@ urlpatterns = [
 
     path('custom-admin/', admin.site.urls),
 
-    path('', include('immo_app.urls')),
+    path('', include('immo_app.urls', namespace='immo_app')),
 
   ]
 

@@ -43,18 +43,13 @@ class ListeLocatairesView(ListView):
         return context
 
 class LocataireCreateView(CreateView):
-
     model = Locataire
     form_class = LocataireForm
     template_name = 'home/locataire_create.html'
+    success_url = reverse_lazy('immo_app:locataire')  
 
     def form_valid(self, form):
-        super().form_valid(form)
-        nouveau_locataire= form.instance
-        locataires = Locataire.objects.all()
-        context = {'locataires': locataires, 'nouveau_locataire': nouveau_locataire}
-        return render(self.request, 'accounts/locataire.html', context)
-
+        return super().form_valid(form)  
 
 class LocataireUpdateView(UpdateView):
     model = Locataire
