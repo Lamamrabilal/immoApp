@@ -26,4 +26,4 @@ COPY --chown=appuser:appuser . .
 
 EXPOSE 8000
 
-CMD ["runserver", "projet_app_immo.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+CMD ["Gunicorn", "projet_app_immo.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
