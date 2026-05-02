@@ -31,3 +31,5 @@ gunicorn
 crispy-tailwind
 django-crispy-forms
 whitenoise
+ruff
+black
