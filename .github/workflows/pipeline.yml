@@ -2,54 +2,62 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main]
+
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+permissions: {}
 
 env:
   IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/projet_app_immo-web
   PYTHON_VERSION: "3.11"
 
-jobs:
-# ============================================
-# JOB 1 — QUALITÉ DU CODE
-# ============================================
-  code_quality:
-    name: 🔍 Qualité du code
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
 
-      - name: Setup Python
+jobs:
+
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v4.1.0
+        with:
+          fetch-depth: 0
+
+      - name: Configuration de Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
-      - name: Installer les outils qualité
-        run: pip install flake8 black isort
+      - name: Installation des dépendances
+        run: pip install -r requirements.txt
 
-      - name: Vérifier le formatage (black)
+      
+      - name: Lint avec Ruff
+        run: ruff check .
+
+      - name: Vérification du formatage avec Black
         run: black --check .
-        continue-on-error: true
 
-      - name: Vérifier les imports (isort)
-        run: isort --check-only .
-        continue-on-error: true
 
-      - name: Linting (flake8)
-        run: flake8 . --max-line-length=120 --exclude=migrations,.venv
-        continue-on-error: true
-
-# ============================================
-# JOB 2 — TESTS
-# ============================================
   tests:
     name: 🧪 Tests
     runs-on: ubuntu-latest
-    needs: code_quality
+    needs: lint
+    permissions:
+      contents: read
 
+    
     services:
       db:
         image: postgres:15
@@ -72,67 +80,45 @@ jobs:
       DEBUG: "True"
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout du code
+        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v4.1.0
 
-      - name: Installer les dépendances système
-        run: |
-          sudo apt-get update && sudo apt-get install -y \
-            build-essential \
-            pkg-config \
-            cmake \
-            libcairo2-dev \
-            libpq-dev \
-            libffi-dev \
-            libjpeg-dev \
-            zlib1g-dev
-
-      - name: Setup Python
+      - name: Configuration de Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
-      - name: Installer les dépendances Python
+      - name: Installation des dépendances
         run: pip install -r requirements.txt
 
-      - name: Appliquer les migrations
-        run: python manage.py migrate --settings=projet_app_immo.settings_test
+      - name: Test with pytest
+        run:
+          pip install pytest pytest-cov
+          pytest tests.py --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
 
-      - name: Lancer les tests
-        run: |
-          python manage.py test \
-            --settings=projet_app_immo.settings_test \
-            --verbosity=2
 
-# ============================================
-# JOB 3 — BUILD DOCKER
-# ============================================
   build:
-    name: 🐳 Build Docker
+    name: Build
     runs-on: ubuntu-latest
+   
     needs: tests
+    permissions:
+      contents: read
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout du code
+        uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v4.1.0
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      - name: Configuration de Python
+        uses: actions/setup-python@v5
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
 
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Installation des dépendances
+        run: pip install -r requirements.txt
 
-      - name: Build et Push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      
+      - name: Build / collecte des fichiers statiques
+        run: python manage.py collectstatic --noinput
