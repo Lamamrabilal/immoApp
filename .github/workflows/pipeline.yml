@@ -6,11 +6,9 @@ on:
   pull_request:
     branches: [main]
 
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
 
 permissions: {}
 
@@ -33,6 +31,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      # FIX : cairo requis dans tous les jobs qui font pip install
+      - name: Installer les dépendances système
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libcairo2-dev \
+            pkg-config \
+            python3-dev
+
       - name: Configuration de Python
         uses: actions/setup-python@v5
         with:
@@ -42,7 +49,6 @@ jobs:
       - name: Installation des dépendances
         run: pip install -r requirements.txt
 
-      
       - name: Lint avec Ruff
         run: ruff check .
 
@@ -57,7 +63,6 @@ jobs:
     permissions:
       contents: read
 
-    
     services:
       db:
         image: postgres:15
@@ -83,6 +88,15 @@ jobs:
       - name: Checkout du code
         uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v4.1.0
 
+      # FIX : cairo requis ici aussi
+      - name: Installer les dépendances système
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libcairo2-dev \
+            pkg-config \
+            python3-dev
+
       - name: Configuration de Python
         uses: actions/setup-python@v5
         with:
@@ -92,16 +106,30 @@ jobs:
       - name: Installation des dépendances
         run: pip install -r requirements.txt
 
-      - name: Test with pytest
-        run:
+      # FIX : | manquant — sans lui, seule la 1ère ligne s'exécutait
+      - name: Lancement des tests avec pytest
+        run: |
           pip install pytest pytest-cov
-          pytest tests.py --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+          pytest --doctest-modules \
+            --junitxml=junit/test-results.xml \
+            --cov=. \
+            --cov-report=xml \
+            --cov-report=html
+
+      - name: Upload des résultats de tests
+        uses: actions/upload-artifact@v4
+        # Toujours uploader, même si les tests échouent
+        if: always()
+        with:
+          name: test-results
+          path: |
+            junit/test-results.xml
+            htmlcov/
 
 
   build:
     name: Build
     runs-on: ubuntu-latest
-   
     needs: tests
     permissions:
       contents: read
@@ -110,6 +138,14 @@ jobs:
       - name: Checkout du code
         uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v4.1.0
 
+      - name: Installer les dépendances système
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libcairo2-dev \
+            pkg-config \
+            python3-dev
+
       - name: Configuration de Python
         uses: actions/setup-python@v5
         with:
@@ -119,6 +155,5 @@ jobs:
       - name: Installation des dépendances
         run: pip install -r requirements.txt
 
-      
       - name: Build / collecte des fichiers statiques
         run: python manage.py collectstatic --noinput
