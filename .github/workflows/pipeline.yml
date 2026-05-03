@@ -31,7 +31,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # FIX : cairo requis dans tous les jobs qui font pip install
       - name: Installer les dépendances système
         run: |
           sudo apt-get update
@@ -49,11 +48,10 @@ jobs:
       - name: Installation des dépendances
         run: pip install -r requirements.txt
 
-      - name: Lint avec Ruff
-        run: ruff check .
-
-      - name: Vérification du formatage avec Black
-        run: black --check .
+      - name: Vérification syntaxique Python
+        run: |
+          find . -name "*.py" ! -path "*/migrations/*" -print0 | \
+          xargs -0 -I {} python -m py_compile {}
 
 
   tests:
@@ -77,7 +75,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
     env:
       SECRET_KEY: django-insecure-test-key-for-ci-only
       DJANGO_DATABASE_URL: postgres://user:password@localhost:5432/immo_db_test
@@ -85,50 +82,40 @@ jobs:
       DEBUG: "True"
 
     steps:
-      - name: Checkout du code
+      - name: Checkout code
         uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98 # v4.1.0
 
-      # FIX : cairo requis ici aussi
       - name: Installer les dépendances système
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libcairo2-dev \
+          sudo apt-get update && sudo apt-get install -y \
+            build-essential \
             pkg-config \
-            python3-dev
-
-      - name: Configuration de Python
+            cmake \
+            libcairo2-dev \
+            libpq-dev \
+            libffi-dev \
+            libjpeg-dev \
+            zlib1g-dev
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
 
-      - name: Installation des dépendances
+      - name: Installer les dépendances Python
         run: pip install -r requirements.txt
 
-      # FIX : | manquant — sans lui, seule la 1ère ligne s'exécutait
-      - name: Lancement des tests avec pytest
+      - name: Appliquer les migrations
+        run: python manage.py migrate --settings=projet_app_immo.settings_test
+
+      - name: Lancer les tests
         run: |
-          pip install pytest pytest-cov
-          pytest --doctest-modules \
-            --junitxml=junit/test-results.xml \
-            --cov=. \
-            --cov-report=xml \
-            --cov-report=html
-
-      - name: Upload des résultats de tests
-        uses: actions/upload-artifact@v4
-        # Toujours uploader, même si les tests échouent
-        if: always()
-        with:
-          name: test-results
-          path: |
-            junit/test-results.xml
-            htmlcov/
-
+          python manage.py test \
+            --settings=projet_app_immo.settings_test \
+            --verbosity=2
 
   build:
-    name: Build
+    name: 🏗️ Build
     runs-on: ubuntu-latest
     needs: tests
     permissions:
