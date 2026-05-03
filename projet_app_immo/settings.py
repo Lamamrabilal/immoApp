@@ -9,7 +9,7 @@ env = environ.Env(
     DEBUG=(bool, True),
     SECRET_KEY=(str, 'django-insecure-fallback-dev-only'),
     ALLOWED_HOSTS=(list, ['localhost', '127.0.0.1']),
-    DJANGO_DATABASE_URL=(str, 'postgrsql:///db.postgresql'),
+    DJANGO_DATABASE_URL=(str, 'sqlite:///db.sqlite3'),
 )
 
 env_file = os.path.join(BASE_DIR, '.env')
