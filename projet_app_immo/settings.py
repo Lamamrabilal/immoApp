@@ -3,25 +3,24 @@ from pathlib import Path
 import environ
 import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Initialize environment variables
-env = environ.Env()
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+env = environ.Env(
+    DEBUG=(bool, True),
+    SECRET_KEY=(str, 'django-insecure-fallback-dev-only'),
+    ALLOWED_HOSTS=(list, ['localhost', '127.0.0.1']),
+    DJANGO_DATABASE_URL=(str, 'postgrsql:///db.postgresql'),
+)
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
+env_file = os.path.join(BASE_DIR, '.env')
+if os.path.exists(env_file):
+    environ.Env.read_env(env_file)
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', True)
-
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
-# Application definition
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
