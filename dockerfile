@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libffi-dev \
     libjpeg-dev \
     zlib1g-dev \
+    curl\
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
@@ -21,7 +22,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
 
 
 
-FROM python:3.11-slim
+FROM python:3.11-slim AS production
 
 WORKDIR /app
 
@@ -42,15 +43,19 @@ RUN useradd --create-home appuser
 
 COPY --chown=appuser:appuser . .
 
-
-RUN python manage.py collectstatic --noinput \
-    && chown -R appuser:appuser staticfiles/
+# Ajouter une SECRET_KEY fictive juste pour le collectstatic
+RUN SECRET_KEY=dummy-build-key \
+    DJANGO_DATABASE_URL=postgresql://dummy:dummy@localhost/dummy \
+    python manage.py collectstatic --noinput
 
 
 USER appuser
 
 EXPOSE 8000
 
+# Healthcheck intégré
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+    CMD curl -f http://localhost:8000/health/ || exit 1
 
 CMD ["gunicorn", "projet_app_immo.wsgi:application", \
     "--bind", "0.0.0.0:8000", \
