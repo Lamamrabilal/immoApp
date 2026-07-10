@@ -19,6 +19,11 @@ from reportlab.pdfgen import canvas
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 
+
+from django.http import JsonResponse
+
+def health_check(request):
+    return JsonResponse({"status": "ok"}, status=200)
 class immo_appHome(TemplateView):
 
     template_name = 'home/immo_app.html'

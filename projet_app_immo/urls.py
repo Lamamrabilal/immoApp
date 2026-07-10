@@ -16,15 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from immo_app.views import health_check
 
 
 app_name = 'immo_app'
 urlpatterns = [
 
     path('custom-admin/', admin.site.urls),
-
+    path('health/', health_check, name='health'),
     path('', include('immo_app.urls', namespace='immo_app')),
-
+    
   ]
 
